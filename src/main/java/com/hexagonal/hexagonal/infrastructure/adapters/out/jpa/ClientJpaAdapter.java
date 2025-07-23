@@ -45,8 +45,8 @@ public class ClientJpaAdapter implements ClientPersistencePort {
         var dbEntity = clientRepository.findById(id)
         .orElseThrow(() -> new RuntimeException());
 
-        dbEntity.setFirstName(createClientCommand.firstname());
-        dbEntity.setLastName(createClientCommand.lastname());
+        dbEntity.setFirstName(createClientCommand.firstName());
+        dbEntity.setLastName(createClientCommand.lastName());
         dbEntity.setEmail(createClientCommand.email());
         dbEntity.setGender(createClientCommand.gender());
         dbEntity.setIpAddress(createClientCommand.ipAddress());

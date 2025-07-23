@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table
+@Table(name = "clients")
 @Data
 public class ClientEntity {
 
@@ -28,8 +28,10 @@ public class ClientEntity {
     public String lastName;
 
     @Column( nullable = false)
-
     public String email;
+
+    @Column
+    public String country;
 
     @Column(name = "gender", nullable = false)
     @Convert(converter = GenderConverter.class)

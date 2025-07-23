@@ -5,8 +5,9 @@ import com.hexagonal.hexagonal.domain.model.ennums.Gender;
 public record CreateClientCommand(
     
     Long id,
-    String firstname,
-    String lastname,
+    String firstName,
+    String lastName,
+    String country,
     String email,
     Gender gender,
     String ipAddress

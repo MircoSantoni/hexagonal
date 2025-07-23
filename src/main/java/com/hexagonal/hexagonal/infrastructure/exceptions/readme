@@ -1,0 +1,4 @@
+Aca van los errores de tecnologia externos a la aplicacion
+ademas de el manejador global de excepciones para
+traducir y manejar los errores a respuestas http que entienda
+el adaptador de entrada
