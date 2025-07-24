@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.hexagonal.hexagonal.application.ports.exceptions.ListDoesNotExistException;
 import com.hexagonal.hexagonal.application.ports.out.ClientPersistencePort;
 import com.hexagonal.hexagonal.domain.model.Client;
-import com.hexagonal.hexagonal.domain.model.exceptions.EmailAlreadyInUseException;
 import com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto.CreateClientCommand;
 import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.entities.ClientEntity;
+import com.hexagonal.hexagonal.infrastructure.exceptions.EmailAlreadyInUseException;
 import com.hexagonal.hexagonal.infrastructure.exceptions.EmptyResourceException;
+import com.hexagonal.hexagonal.infrastructure.exceptions.ListDoesNotExistException;
 import com.hexagonal.hexagonal.infrastructure.mapper.ClientMapper;
 
 @Service

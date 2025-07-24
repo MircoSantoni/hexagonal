@@ -1,92 +1,104 @@
 package com.hexagonal.hexagonal.infrastructure.exceptions.handler;
 
-// import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-// import org.springframework.web.ErrorResponse;
-// import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.hexagonal.hexagonal.application.ports.exceptions.ListDoesNotExistException;
-import com.hexagonal.hexagonal.domain.model.exceptions.EmailAlreadyInUseException;
-import com.hexagonal.hexagonal.domain.model.exceptions.NameConventionException;
-import com.hexagonal.hexagonal.infrastructure.exceptions.BadRequestException;
-import com.hexagonal.hexagonal.infrastructure.exceptions.EmptyResourceException;
+import com.hexagonal.hexagonal.infrastructure.exceptions.*;
 
+import java.net.URI;
+import java.time.Instant;
+
+// /*
+// * Implementacion segun: https://www.rfc-editor.org/rfc/rfc9457.html#name-members-of-a-problem-detail
+// * */
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ListDoesNotExistException.class)
-    public ResponseEntity<Map<String,String>> handleClientListDoesNotExistException(ListDoesNotExistException exception) {
-        Map<String, String> response = new HashMap<>();
+    @Value("${problem-detail.name-exception}")
+    private String nameException;
 
-        response.put("Error: ", "Conflicto al buscar el cliente");
-        response.put("Message: " , exception.getMessage());
+    @Value("${problem-detail.name-timestamp}")
+    private String nameTimestamp;
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    @ExceptionHandler({BusinessException.class, ApiException.class})
+    public ResponseEntity<ProblemDetail> handleCustomExceptions(Exception e) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        String detail = null;
+        String exception = e.getClass().getSimpleName();
+
+        if (e instanceof BusinessException be) {
+            status = be.getStatus();
+            detail = be.getDetail();
+        } else if (e instanceof ApiException se) {
+            status = se.getStatus();
+            detail = se.getDetail();
+        }
+
+        var problemDetail = ProblemDetail.forStatus(status);
+        problemDetail.setTitle(e.getMessage());
+        problemDetail.setDetail(detail);
+        problemDetail.setProperty(nameException, exception);
+        problemDetail.setProperty(nameTimestamp, Instant.now());
+//        problemDetail.setType(URI.create("https://midominio.com/docs/errors/" + code));
+        problemDetail.setInstance(URI.create(ServletUriComponentsBuilder.fromCurrentRequest().toUriString()));
+        logsDetailException(e, status);
+        return new ResponseEntity<>(problemDetail, status);
     }
 
-    @ExceptionHandler(EmailAlreadyInUseException.class)
-    public ResponseEntity<Map<String,String>> handleEmailAlreadyInUseException(EmailAlreadyInUseException exception) {
-        Map<String, String> response = new HashMap<>();
+    @ExceptionHandler(DomainException.class)
+    public ResponseEntity<ProblemDetail> handleDomainExceptions(DomainException e) {
+        HttpStatus status = mapDomainExceptionToHttpStatus(e);
+        String exception = e.getClass().getSimpleName();
 
-        response.put("Error: ", "Conflicto con el correo del cliente");
-        response.put("Message: " , exception.getMessage());
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        var problemDetail = ProblemDetail.forStatus(status);
+        problemDetail.setTitle(e.getMessage());
+        problemDetail.setDetail(e.getDetail());
+        problemDetail.setProperty(nameException, exception);
+        problemDetail.setProperty(nameTimestamp, Instant.now());
+//        problemDetail.setType(URI.create("https://midominio.com/docs/errors/" + code));
+        problemDetail.setInstance(URI.create(ServletUriComponentsBuilder.fromCurrentRequest().toUriString()));
+        logsDetailException(e, status);
+        return new ResponseEntity<>(problemDetail, status);
     }
 
-    @ExceptionHandler(NameConventionException.class)
-    public ResponseEntity<Map<String,String>> handleNameConventionException(NameConventionException exception) {
-        Map<String, String> response = new HashMap<>();
-
-        response.put("Error: " , "Conflicto con los nombres de los clientes");
-        response.put("Message: ", exception.getMessage());
-        
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-    }
-    
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<Map<String,String>> handBadRequestException(BadRequestException exception) {
-        Map<String, String> response = new HashMap<>();
-
-        response.put("Error: " , "Conflicto, solicitud denegada");
-        response.put("Message: ", exception.getMessage());
-        
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    private HttpStatus mapDomainExceptionToHttpStatus(DomainException e) {
+        return switch (e) {
+            case ListDoesNotExistException ignored -> HttpStatus.CONFLICT;
+            case EmailAlreadyInUseException ignored -> HttpStatus.UNPROCESSABLE_ENTITY;
+            case BadRequestException ignored -> HttpStatus.UNPROCESSABLE_ENTITY;
+            case EmptyResourceException ignored -> HttpStatus.UNPROCESSABLE_ENTITY;
+            default -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
     }
 
-    @ExceptionHandler(EmptyResourceException.class)
-    public ResponseEntity<Map<String,String>> handleEmptyResourceException(EmptyResourceException exception) {
-        Map<String, String> response = new HashMap<>();
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleGeneric(Exception e) {
+        var problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        problemDetail.setTitle("Error interno del servidor");
+        problemDetail.setDetail(e.getMessage());
+//        problemDetail.setType(URI.create("https://midominio.com/docs/errors/INTERNAL_ERROR"));
+        problemDetail.setProperty(nameException, "INTERNAL_ERROR");
+        problemDetail.setProperty(nameTimestamp, Instant.now());
+        problemDetail.setInstance(URI.create(ServletUriComponentsBuilder.fromCurrentRequest().toUriString()));
 
-        response.put("Error: " , "Conflicto, recurso inexistente");
-        response.put("Message: ", exception.getMessage());
-        
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        logsDetailException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(problemDetail, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    
 
-    // TO DO terminar esto 
-    // @ExceptionHandler(MethodArgumentNotValidException.class)
-    // public ResponseEntity<ErrorDetail> handleValidationExceptions(MethodArgumentNotValidException ex) {
-    //     List<String> errors = ex.getBindingResult()
-    //             .getFieldErrors()
-    //             .stream()
-    //             .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-    //             .collect(Collectors.toList());
-
-    //     String errorMessage = String.join(", ", errors);
-    //     return buildErrorResponse(HttpStatus.BAD_REQUEST, errorMessage);
-    // }
-
-    // private ResponseEntity<ErrorDetail> buildErrorResponse(HttpStatus status, String message) {
-    //     ErrorResponse errorResponse = new ErrorResponse(status.value(), message);
-    //     return new ResponseEntity<>(errorResponse, status);
-    // }
-
+    void logsDetailException(Exception e, HttpStatus status) {
+        log.error("ERROR - Http Status: " + status + ", Message: " + e.getMessage());
+    }
 }
+
+// // // // // // // // // ListDoesNotExistException
+// // // // // // // // // EmailAlreadyInUseException
+// // // // // // // // // BadRequestException
+// // // // // // // // // EmptyResourceException

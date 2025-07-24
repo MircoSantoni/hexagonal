@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.hexagonal.hexagonal.application.ports.exceptions.ListDoesNotExistException;
 import com.hexagonal.hexagonal.application.ports.out.ProductPersistancePort;
 import com.hexagonal.hexagonal.domain.model.Product;
 import com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto.CreateProductCommand;
 import com.hexagonal.hexagonal.infrastructure.exceptions.EmptyResourceException;
+import com.hexagonal.hexagonal.infrastructure.exceptions.ListDoesNotExistException;
 import com.hexagonal.hexagonal.infrastructure.mapper.ProductMapper;
 
 @Service

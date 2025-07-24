@@ -5,7 +5,6 @@ import java.util.List;
 import com.hexagonal.hexagonal.application.ports.in.ClientServicePort;
 import com.hexagonal.hexagonal.application.ports.out.ClientPersistencePort;
 import com.hexagonal.hexagonal.domain.model.Client;
-import com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto.CreateClientCommand;
 
 
 public class ClientServicePortImpl implements ClientServicePort {
