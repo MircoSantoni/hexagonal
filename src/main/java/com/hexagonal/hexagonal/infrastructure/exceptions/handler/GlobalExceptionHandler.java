@@ -1,18 +1,17 @@
 package com.hexagonal.hexagonal.infrastructure.exceptions.handler;
 
-import java.util.List;
+// import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+// import org.springframework.web.ErrorResponse;
+// import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.hexagonal.hexagonal.application.ports.exceptions.ClientsListDoesNotExistException;
-import com.hexagonal.hexagonal.application.ports.exceptions.GenderDoestNotExistException;
 import com.hexagonal.hexagonal.domain.model.exceptions.EmailAlreadyInUseException;
 import com.hexagonal.hexagonal.domain.model.exceptions.NameConventionException;
 import com.hexagonal.hexagonal.infrastructure.exceptions.BadRequestException;
@@ -30,17 +29,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
-
-    @ExceptionHandler(GenderDoestNotExistException.class)
-    public ResponseEntity<Map<String,String>> handleGenderDoestNotExistException(GenderDoestNotExistException exception) {
-        Map<String, String> response = new HashMap<>();
-
-        response.put("Error: ", "Conflicto al generar el genero del cliente");
-        response.put("Message: " , exception.getMessage());
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-    }
-
 
     @ExceptionHandler(EmailAlreadyInUseException.class)
     public ResponseEntity<Map<String,String>> handleEmailAlreadyInUseException(EmailAlreadyInUseException exception) {
