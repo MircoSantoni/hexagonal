@@ -22,6 +22,9 @@ public class ClientJpaAdapter implements ClientPersistencePort {
 
     @Override
     public List<Client> findAll() {
+        var clientes = clientRepository.findAll();
+        System.out.println(clientes);
+
         return clientRepository.findAll().stream()
         .map(clientEntityMapper::fromEntityToDomain)
         .toList();
@@ -48,6 +51,7 @@ public class ClientJpaAdapter implements ClientPersistencePort {
         dbEntity.setFirstName(createClientCommand.firstName());
         dbEntity.setLastName(createClientCommand.lastName());
         dbEntity.setEmail(createClientCommand.email());
+        dbEntity.setCountry(createClientCommand.country());
         dbEntity.setGender(createClientCommand.gender());
         dbEntity.setIpAddress(createClientCommand.ipAddress());
         
