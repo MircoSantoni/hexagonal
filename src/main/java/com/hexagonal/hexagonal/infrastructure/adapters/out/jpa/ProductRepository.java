@@ -5,11 +5,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.entities.ClientEntity;
+import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.entities.ProductEntity;
 
 @Repository
-public interface ClientRepository extends JpaRepository<ClientEntity, Long> {
+public interface ProductRepository extends JpaRepository<ProductEntity, String> {
 
-    Optional<ClientEntity> findByEmail(String email);
-    
 }

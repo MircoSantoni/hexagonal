@@ -4,22 +4,22 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.hexagonal.hexagonal.application.ports.exceptions.ClientsListDoesNotExistException;
+import com.hexagonal.hexagonal.application.ports.exceptions.ListDoesNotExistException;
 import com.hexagonal.hexagonal.application.ports.out.ClientPersistencePort;
 import com.hexagonal.hexagonal.domain.model.Client;
 import com.hexagonal.hexagonal.domain.model.exceptions.EmailAlreadyInUseException;
 import com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto.CreateClientCommand;
-import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.ClientEntity;
+import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.entities.ClientEntity;
 import com.hexagonal.hexagonal.infrastructure.exceptions.EmptyResourceException;
-import com.hexagonal.hexagonal.infrastructure.mapper.ClientEntityMapper;
+import com.hexagonal.hexagonal.infrastructure.mapper.ClientMapper;
 
 @Service
 public class ClientJpaAdapter implements ClientPersistencePort {
 
     private final ClientRepository clientRepository;
-    private final ClientEntityMapper clientEntityMapper;
+    private final ClientMapper clientEntityMapper;
 
-    public ClientJpaAdapter(ClientRepository clientRepository, ClientEntityMapper clientEntityMapper) {
+    public ClientJpaAdapter(ClientRepository clientRepository, ClientMapper clientEntityMapper) {
         this.clientRepository = clientRepository;
         this.clientEntityMapper = clientEntityMapper;
     }
@@ -32,7 +32,7 @@ public class ClientJpaAdapter implements ClientPersistencePort {
                     .map(clientEntityMapper::fromEntityToDomain)
                     .toList();
         } catch (Exception exception) {
-            throw new ClientsListDoesNotExistException("Error al cargar la lista de clientes");
+            throw new ListDoesNotExistException("Error al cargar la lista de clientes");
         }
     }
 

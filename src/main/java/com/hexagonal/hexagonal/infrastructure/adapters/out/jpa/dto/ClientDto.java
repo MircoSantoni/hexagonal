@@ -1,4 +1,4 @@
-package com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto;
+package com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.dto;
 
 import com.hexagonal.hexagonal.domain.model.ennums.Gender;
 

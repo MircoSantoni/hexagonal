@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.hexagonal.hexagonal.application.ports.exceptions.ClientsListDoesNotExistException;
+import com.hexagonal.hexagonal.application.ports.exceptions.ListDoesNotExistException;
 import com.hexagonal.hexagonal.domain.model.exceptions.EmailAlreadyInUseException;
 import com.hexagonal.hexagonal.domain.model.exceptions.NameConventionException;
 import com.hexagonal.hexagonal.infrastructure.exceptions.BadRequestException;
@@ -20,8 +20,8 @@ import com.hexagonal.hexagonal.infrastructure.exceptions.EmptyResourceException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ClientsListDoesNotExistException.class)
-    public ResponseEntity<Map<String,String>> handleClientListDoesNotExistException(ClientsListDoesNotExistException exception) {
+    @ExceptionHandler(ListDoesNotExistException.class)
+    public ResponseEntity<Map<String,String>> handleClientListDoesNotExistException(ListDoesNotExistException exception) {
         Map<String, String> response = new HashMap<>();
 
         response.put("Error: ", "Conflicto al buscar el cliente");

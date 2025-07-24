@@ -1,4 +1,4 @@
-package com.hexagonal.hexagonal.infrastructure.adapters.out.jpa;
+package com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.entities;
 
 import com.hexagonal.hexagonal.domain.model.ennums.Gender;
 import com.hexagonal.hexagonal.infrastructure.utils.GenderConverter;

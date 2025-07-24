@@ -13,25 +13,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hexagonal.hexagonal.application.ports.in.ClientServicePort;
-import com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto.ClientDto;
 import com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto.CreateClientCommand;
-import com.hexagonal.hexagonal.infrastructure.mapper.ClientEntityMapper;
+import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.dto.ClientDto;
+import com.hexagonal.hexagonal.infrastructure.mapper.ClientMapper;
 
 
 @RestController
-@RequestMapping("/api/clients/")
+@RequestMapping("/api/customer/")
 public class ClientController {
 
 
     private final ClientServicePort clientServicePort;
-    private final ClientEntityMapper clientEntityMapper;
+    private final ClientMapper clientEntityMapper;
 
-    public ClientController(ClientServicePort clientServicePort, ClientEntityMapper clientEntityMapper) {
+    public ClientController(ClientServicePort clientServicePort, ClientMapper clientEntityMapper) {
         this.clientServicePort = clientServicePort;
         this.clientEntityMapper = clientEntityMapper;
     }
 
-    
     @GetMapping
     public ResponseEntity<List<ClientDto>> listAll() {
         return ResponseEntity.ok(clientEntityMapper.fromListDomainToDtoList(clientServicePort.listAll()));

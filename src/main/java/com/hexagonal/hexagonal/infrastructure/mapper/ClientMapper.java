@@ -5,12 +5,12 @@ import java.util.List;
 import org.mapstruct.Mapper;
 
 import com.hexagonal.hexagonal.domain.model.Client;
-import com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto.ClientDto;
 import com.hexagonal.hexagonal.infrastructure.adapters.in.web.dto.CreateClientCommand;
-import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.ClientEntity;
+import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.dto.ClientDto;
+import com.hexagonal.hexagonal.infrastructure.adapters.out.jpa.entities.ClientEntity;
 
 @Mapper(componentModel="spring")
-public interface ClientEntityMapper {
+public interface ClientMapper {
     
     Client fromEntityToDomain(ClientEntity clientEntity);  
 
