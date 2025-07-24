@@ -23,7 +23,6 @@ public class ClientJpaAdapter implements ClientPersistencePort {
     @Override
     public List<Client> findAll() {
         var clientes = clientRepository.findAll();
-        System.out.println(clientes);
 
         return clientRepository.findAll().stream()
         .map(clientEntityMapper::fromEntityToDomain)

@@ -41,7 +41,4 @@ public class ClientServicePortImpl implements ClientServicePort {
         return clientPersistencePort.deleteClient(id);
     }
 
-
-
-    
 }
